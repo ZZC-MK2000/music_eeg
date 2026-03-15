@@ -1,0 +1,5 @@
+psychopy==2022.2.5
+pyserial>=3.5
+numpy>=1.23
+importlib-metadata>=6.8; python_version<"3.10"
+ffpyplayer>=4.5.0

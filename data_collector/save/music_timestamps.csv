@@ -1,0 +1,17 @@
+Event,Timestamp,Unix_Timestamp,Trigger_Index,Trigger_Sent,Music_Type,Music_File
+实验开始,2026-01-22 14:17:46.025282,1769062666.0252821,1,True,,
+音乐播放开始,2026-01-22 14:17:48.362431,1769062668.3624318,2,True,rock,d:\python\music_eeg\materials\music\rock.mp3
+音乐播放结束,2026-01-22 14:18:23.620384,1769062703.6203842,2,True,rock,d:\python\music_eeg\materials\music\rock.mp3
+休息开始,2026-01-22 14:18:31.430401,1769062711.4304013,,False,,
+休息结束,2026-01-22 14:18:41.515554,1769062721.515554,,False,,
+音乐播放开始,2026-01-22 14:18:43.431704,1769062723.4317048,1,True,classical,d:\python\music_eeg\materials\music\classical.mp3
+音乐播放结束,2026-01-22 14:19:15.547631,1769062755.5476313,1,True,classical,d:\python\music_eeg\materials\music\classical.mp3
+休息开始,2026-01-22 14:19:25.757106,1769062765.7571058,,False,,
+休息结束,2026-01-22 14:19:35.841801,1769062775.8418012,,False,,
+音乐播放开始,2026-01-22 14:19:37.394026,1769062777.394026,4,True,ambient,d:\python\music_eeg\materials\music\ambient.mp3
+音乐播放结束,2026-01-22 14:20:11.759572,1769062811.7595727,4,True,ambient,d:\python\music_eeg\materials\music\ambient.mp3
+休息开始,2026-01-22 14:20:18.618558,1769062818.6185584,,False,,
+休息结束,2026-01-22 14:20:28.709415,1769062828.7094157,,False,,
+音乐播放开始,2026-01-22 14:20:30.264353,1769062830.2653525,3,True,jazz,d:\python\music_eeg\materials\music\jazz.mp3
+音乐播放结束,2026-01-22 14:21:01.595476,1769062861.5954766,3,True,jazz,d:\python\music_eeg\materials\music\jazz.mp3
+实验结束,2026-01-22 14:21:08.307581,1769062868.307582,2,True,,

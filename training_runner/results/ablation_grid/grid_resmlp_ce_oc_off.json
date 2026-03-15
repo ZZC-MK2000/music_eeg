@@ -1,0 +1,254 @@
+{
+  "best_model": "eeg_resmlp",
+  "best_val_accuracy": 0.34871659634317864,
+  "best_robust_score": 0.34871659634317864,
+  "best_val_accuracy_std": 0.0,
+  "test_accuracy": 0.2836673699015471,
+  "test_balanced_accuracy": 0.2817248639124312,
+  "test_macro_f1": 0.2595628493130187,
+  "robust_seeds": [
+    42
+  ],
+  "use_smote": false,
+  "use_calibration": false,
+  "cv_folds": 2,
+  "cv_weight": 0.35,
+  "selection_mode": "val_priority",
+  "calibration_min_gain": 0.0,
+  "run_classical_models": false,
+  "classical_profile": "disabled",
+  "model_variant": "resmlp",
+  "deep_loss": "ce",
+  "use_onecycle": false,
+  "classes": [
+    "song_1",
+    "song_10",
+    "song_2",
+    "song_3",
+    "song_4",
+    "song_5",
+    "song_6",
+    "song_7",
+    "song_8",
+    "song_9"
+  ],
+  "confusion_matrix": [
+    [
+      427,
+      0,
+      369,
+      28,
+      277,
+      7,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      761,
+      0,
+      0,
+      0,
+      0,
+      0,
+      60,
+      184,
+      179
+    ],
+    [
+      348,
+      0,
+      384,
+      65,
+      271,
+      10,
+      2,
+      0,
+      0,
+      0
+    ],
+    [
+      114,
+      0,
+      427,
+      60,
+      317,
+      144,
+      12,
+      22,
+      0,
+      0
+    ],
+    [
+      17,
+      0,
+      239,
+      66,
+      552,
+      143,
+      129,
+      26,
+      0,
+      0
+    ],
+    [
+      3,
+      0,
+      73,
+      25,
+      423,
+      110,
+      314,
+      155,
+      45,
+      0
+    ],
+    [
+      0,
+      3,
+      3,
+      36,
+      207,
+      163,
+      178,
+      357,
+      149,
+      0
+    ],
+    [
+      0,
+      54,
+      0,
+      0,
+      44,
+      150,
+      118,
+      373,
+      404,
+      17
+    ],
+    [
+      0,
+      145,
+      0,
+      7,
+      20,
+      139,
+      87,
+      403,
+      343,
+      20
+    ],
+    [
+      0,
+      469,
+      0,
+      0,
+      0,
+      27,
+      4,
+      213,
+      416,
+      39
+    ]
+  ],
+  "classification_report": {
+    "song_1": {
+      "precision": 0.46974697469746973,
+      "recall": 0.38537906137184114,
+      "f1-score": 0.42340109072880516,
+      "support": 1108.0
+    },
+    "song_10": {
+      "precision": 0.5314245810055865,
+      "recall": 0.6427364864864865,
+      "f1-score": 0.5818042813455657,
+      "support": 1184.0
+    },
+    "song_2": {
+      "precision": 0.2568561872909699,
+      "recall": 0.35555555555555557,
+      "f1-score": 0.29825242718446604,
+      "support": 1080.0
+    },
+    "song_3": {
+      "precision": 0.20905923344947736,
+      "recall": 0.05474452554744526,
+      "f1-score": 0.08676789587852494,
+      "support": 1096.0
+    },
+    "song_4": {
+      "precision": 0.26148744670772145,
+      "recall": 0.4709897610921502,
+      "f1-score": 0.33627779469996955,
+      "support": 1172.0
+    },
+    "song_5": {
+      "precision": 0.12318029115341546,
+      "recall": 0.09581881533101046,
+      "f1-score": 0.10779029887310142,
+      "support": 1148.0
+    },
+    "song_6": {
+      "precision": 0.2109004739336493,
+      "recall": 0.1624087591240876,
+      "f1-score": 0.18350515463917524,
+      "support": 1096.0
+    },
+    "song_7": {
+      "precision": 0.23182100683654444,
+      "recall": 0.32155172413793104,
+      "f1-score": 0.26941133983387505,
+      "support": 1160.0
+    },
+    "song_8": {
+      "precision": 0.2225827384815055,
+      "recall": 0.29467353951890035,
+      "f1-score": 0.2536044362292052,
+      "support": 1164.0
+    },
+    "song_9": {
+      "precision": 0.15294117647058825,
+      "recall": 0.03339041095890411,
+      "f1-score": 0.054813773717498245,
+      "support": 1168.0
+    },
+    "accuracy": 0.2836673699015471,
+    "macro avg": {
+      "precision": 0.26700001100269277,
+      "recall": 0.2817248639124312,
+      "f1-score": 0.2595628493130187,
+      "support": 11376.0
+    },
+    "weighted avg": {
+      "precision": 0.26739408446445556,
+      "recall": 0.2836673699015471,
+      "f1-score": 0.2607166496608739,
+      "support": 11376.0
+    }
+  },
+  "significance_vs_best": [],
+  "feature_ablation": [],
+  "evaluation_notes": {
+    "split_warning": "当前评估依赖现有 train/val/test csv。若窗口来自同一连续段，可能高估泛化性能。建议补充被试级/会话级划分。",
+    "paper_tip": "建议在论文正文报告 acc、balanced acc、macro F1（mean±std）并附显著性检验。"
+  },
+  "all_candidates": [
+    {
+      "name": "eeg_resmlp",
+      "val_acc": 0.34871659634317864,
+      "robust_score_mean": 0.34871659634317864,
+      "val_acc_std": 0.0,
+      "cv_acc_mean": 0.0
+    },
+    {
+      "name": "ensemble_top3_weighted",
+      "val_acc": 0.34871659634317864,
+      "robust_score_mean": 0.34871659634317864,
+      "val_acc_std": 0.0,
+      "cv_acc_mean": 0.0
+    }
+  ]
+}

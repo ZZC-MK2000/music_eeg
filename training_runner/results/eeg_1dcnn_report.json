@@ -1,0 +1,254 @@
+{
+  "best_model": "eeg_msresnet",
+  "best_val_accuracy": 0.9970991561181435,
+  "best_robust_score": 0.9970991561181435,
+  "best_val_accuracy_std": 0.0,
+  "test_accuracy": 0.9970991561181435,
+  "test_balanced_accuracy": 0.9971079123835718,
+  "test_macro_f1": 0.9970908844073243,
+  "robust_seeds": [
+    42
+  ],
+  "use_smote": false,
+  "use_calibration": false,
+  "cv_folds": 2,
+  "cv_weight": 0.35,
+  "selection_mode": "val_priority",
+  "calibration_min_gain": 0.0,
+  "run_classical_models": false,
+  "classical_profile": "disabled",
+  "model_variant": "msresnet",
+  "deep_loss": "focal",
+  "use_onecycle": true,
+  "classes": [
+    "song_1",
+    "song_10",
+    "song_2",
+    "song_3",
+    "song_4",
+    "song_5",
+    "song_6",
+    "song_7",
+    "song_8",
+    "song_9"
+  ],
+  "confusion_matrix": [
+    [
+      1108,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1184,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1079,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1096,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1172,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1148,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      9,
+      1087,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      14,
+      1146,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      1161,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      1162
+    ]
+  ],
+  "classification_report": {
+    "song_1": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1108.0
+    },
+    "song_10": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1184.0
+    },
+    "song_2": {
+      "precision": 1.0,
+      "recall": 0.9990740740740741,
+      "f1-score": 0.999536822603057,
+      "support": 1080.0
+    },
+    "song_3": {
+      "precision": 0.9990884229717412,
+      "recall": 1.0,
+      "f1-score": 0.9995440036479708,
+      "support": 1096.0
+    },
+    "song_4": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1172.0
+    },
+    "song_5": {
+      "precision": 0.9922212618841832,
+      "recall": 1.0,
+      "f1-score": 0.9960954446854664,
+      "support": 1148.0
+    },
+    "song_6": {
+      "precision": 0.9872842870118075,
+      "recall": 0.9917883211678832,
+      "f1-score": 0.9895311788802913,
+      "support": 1096.0
+    },
+    "song_7": {
+      "precision": 0.9973890339425587,
+      "recall": 0.9879310344827587,
+      "f1-score": 0.992637505413599,
+      "support": 1160.0
+    },
+    "song_8": {
+      "precision": 0.9948586118251928,
+      "recall": 0.9974226804123711,
+      "f1-score": 0.9961389961389961,
+      "support": 1164.0
+    },
+    "song_9": {
+      "precision": 1.0,
+      "recall": 0.9948630136986302,
+      "f1-score": 0.9974248927038627,
+      "support": 1168.0
+    },
+    "accuracy": 0.9970991561181435,
+    "macro avg": {
+      "precision": 0.9970841617635482,
+      "recall": 0.9971079123835718,
+      "f1-score": 0.9970908844073243,
+      "support": 11376.0
+    },
+    "weighted avg": {
+      "precision": 0.9971098103307758,
+      "recall": 0.9970991561181435,
+      "f1-score": 0.9970992713981075,
+      "support": 11376.0
+    }
+  },
+  "significance_vs_best": [],
+  "feature_ablation": [],
+  "evaluation_notes": {
+    "split_warning": "当前评估依赖现有 train/val/test csv。若窗口来自同一连续段，可能高估泛化性能。建议补充被试级/会话级划分。",
+    "paper_tip": "建议在论文正文报告 acc、balanced acc、macro F1（mean±std）并附显著性检验。"
+  },
+  "all_candidates": [
+    {
+      "name": "eeg_msresnet",
+      "val_acc": 0.9970991561181435,
+      "robust_score_mean": 0.9970991561181435,
+      "val_acc_std": 0.0,
+      "cv_acc_mean": 0.0
+    },
+    {
+      "name": "ensemble_top3_weighted",
+      "val_acc": 0.9970991561181435,
+      "robust_score_mean": 0.9970991561181435,
+      "val_acc_std": 0.0,
+      "cv_acc_mean": 0.0
+    }
+  ]
+}

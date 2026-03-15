@@ -1,0 +1,6 @@
+# Unified umbrella file
+# Install all dependencies with:
+#   pip install -r requirements.txt
+
+-r requirements.collector.txt
+-r requirements.processing.txt

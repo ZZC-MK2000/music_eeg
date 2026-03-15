@@ -1,0 +1,254 @@
+{
+  "best_model": "eeg_msresnet",
+  "best_val_accuracy": 0.8811533052039381,
+  "best_robust_score": 0.8811533052039381,
+  "best_val_accuracy_std": 0.0,
+  "test_accuracy": 0.9251054852320675,
+  "test_balanced_accuracy": 0.9250630391363925,
+  "test_macro_f1": 0.924266829818755,
+  "robust_seeds": [
+    42
+  ],
+  "use_smote": false,
+  "use_calibration": false,
+  "cv_folds": 2,
+  "cv_weight": 0.35,
+  "selection_mode": "val_priority",
+  "calibration_min_gain": 0.0,
+  "run_classical_models": false,
+  "classical_profile": "disabled",
+  "model_variant": "msresnet",
+  "deep_loss": "focal",
+  "use_onecycle": false,
+  "classes": [
+    "song_1",
+    "song_10",
+    "song_2",
+    "song_3",
+    "song_4",
+    "song_5",
+    "song_6",
+    "song_7",
+    "song_8",
+    "song_9"
+  ],
+  "confusion_matrix": [
+    [
+      781,
+      0,
+      327,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1103,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      81
+    ],
+    [
+      7,
+      0,
+      1058,
+      15,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      4,
+      1052,
+      40,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1051,
+      121,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1126,
+      21,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      1071,
+      22,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      11,
+      1117,
+      32,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      17,
+      1147,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      150,
+      1018
+    ]
+  ],
+  "classification_report": {
+    "song_1": {
+      "precision": 0.9911167512690355,
+      "recall": 0.7048736462093863,
+      "f1-score": 0.8238396624472574,
+      "support": 1108.0
+    },
+    "song_10": {
+      "precision": 1.0,
+      "recall": 0.9315878378378378,
+      "f1-score": 0.9645824223874071,
+      "support": 1184.0
+    },
+    "song_2": {
+      "precision": 0.761699064074874,
+      "recall": 0.9796296296296296,
+      "f1-score": 0.8570271364925071,
+      "support": 1080.0
+    },
+    "song_3": {
+      "precision": 0.985941893158388,
+      "recall": 0.9598540145985401,
+      "f1-score": 0.9727230698104484,
+      "support": 1096.0
+    },
+    "song_4": {
+      "precision": 0.9615736505032022,
+      "recall": 0.8967576791808873,
+      "f1-score": 0.9280353200883003,
+      "support": 1172.0
+    },
+    "song_5": {
+      "precision": 0.9015212169735789,
+      "recall": 0.980836236933798,
+      "f1-score": 0.9395077179808093,
+      "support": 1148.0
+    },
+    "song_6": {
+      "precision": 0.970988213961922,
+      "recall": 0.9771897810218978,
+      "f1-score": 0.9740791268758526,
+      "support": 1096.0
+    },
+    "song_7": {
+      "precision": 0.9662629757785467,
+      "recall": 0.9629310344827586,
+      "f1-score": 0.9645941278065631,
+      "support": 1160.0
+    },
+    "song_8": {
+      "precision": 0.8630549285176825,
+      "recall": 0.9853951890034365,
+      "f1-score": 0.9201764941837144,
+      "support": 1164.0
+    },
+    "song_9": {
+      "precision": 0.9262966333030027,
+      "recall": 0.8715753424657534,
+      "f1-score": 0.898103220114689,
+      "support": 1168.0
+    },
+    "accuracy": 0.9251054852320675,
+    "macro avg": {
+      "precision": 0.9328455327540233,
+      "recall": 0.9250630391363925,
+      "f1-score": 0.924266829818755,
+      "support": 11376.0
+    },
+    "weighted avg": {
+      "precision": 0.9334453128412306,
+      "recall": 0.9251054852320675,
+      "f1-score": 0.9246990060691997,
+      "support": 11376.0
+    }
+  },
+  "significance_vs_best": [],
+  "feature_ablation": [],
+  "evaluation_notes": {
+    "split_warning": "当前评估依赖现有 train/val/test csv。若窗口来自同一连续段，可能高估泛化性能。建议补充被试级/会话级划分。",
+    "paper_tip": "建议在论文正文报告 acc、balanced acc、macro F1（mean±std）并附显著性检验。"
+  },
+  "all_candidates": [
+    {
+      "name": "eeg_msresnet",
+      "val_acc": 0.8811533052039381,
+      "robust_score_mean": 0.8811533052039381,
+      "val_acc_std": 0.0,
+      "cv_acc_mean": 0.0
+    },
+    {
+      "name": "ensemble_top3_weighted",
+      "val_acc": 0.8811533052039381,
+      "robust_score_mean": 0.8811533052039381,
+      "val_acc_std": 0.0,
+      "cv_acc_mean": 0.0
+    }
+  ]
+}

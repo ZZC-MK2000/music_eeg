@@ -1,0 +1,34 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Virtual envs
+.venv/
+venv/
+
+# VS Code workspace cache
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+
+# Large processed datasets and model artifacts
+processed_data/*.csv
+processed_data/*.pt
+processed_data/*.joblib
+processed_data/*.pkl
+
+# Large training outputs
+training_runner/results/*.pt
+training_runner/results/*.joblib
+training_runner/results/*.pkl
+training_runner/results/figures/
+
+# Local experiment media (can be very large)
+data_collector/materials/music/*.mp3
+data_collector/materials/music/*.wav

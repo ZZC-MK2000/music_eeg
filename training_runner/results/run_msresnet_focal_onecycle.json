@@ -1,0 +1,254 @@
+{
+  "best_model": "eeg_msresnet",
+  "best_val_accuracy": 1.0,
+  "best_robust_score": 1.0,
+  "best_val_accuracy_std": 0.0,
+  "test_accuracy": 0.999648382559775,
+  "test_balanced_accuracy": 0.999640366719342,
+  "test_macro_f1": 0.9996480440825412,
+  "robust_seeds": [
+    42
+  ],
+  "use_smote": false,
+  "use_calibration": false,
+  "cv_folds": 2,
+  "cv_weight": 0.35,
+  "selection_mode": "val_priority",
+  "calibration_min_gain": 0.0,
+  "run_classical_models": false,
+  "classical_profile": "disabled",
+  "model_variant": "msresnet",
+  "deep_loss": "focal",
+  "use_onecycle": true,
+  "classes": [
+    "song_1",
+    "song_10",
+    "song_2",
+    "song_3",
+    "song_4",
+    "song_5",
+    "song_6",
+    "song_7",
+    "song_8",
+    "song_9"
+  ],
+  "confusion_matrix": [
+    [
+      1108,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1184,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1080,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1096,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1172,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1148,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1093,
+      3,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1160,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1163,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1168
+    ]
+  ],
+  "classification_report": {
+    "song_1": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1108.0
+    },
+    "song_10": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1184.0
+    },
+    "song_2": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1080.0
+    },
+    "song_3": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1096.0
+    },
+    "song_4": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1172.0
+    },
+    "song_5": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1148.0
+    },
+    "song_6": {
+      "precision": 1.0,
+      "recall": 0.9972627737226277,
+      "f1-score": 0.9986295111923252,
+      "support": 1096.0
+    },
+    "song_7": {
+      "precision": 0.9974204643164231,
+      "recall": 1.0,
+      "f1-score": 0.9987085665088248,
+      "support": 1160.0
+    },
+    "song_8": {
+      "precision": 1.0,
+      "recall": 0.9991408934707904,
+      "f1-score": 0.9995702621400946,
+      "support": 1164.0
+    },
+    "song_9": {
+      "precision": 0.9991445680068435,
+      "recall": 1.0,
+      "f1-score": 0.9995721009841677,
+      "support": 1168.0
+    },
+    "accuracy": 0.999648382559775,
+    "macro avg": {
+      "precision": 0.9996565032323266,
+      "recall": 0.999640366719342,
+      "f1-score": 0.9996480440825412,
+      "support": 11376.0
+    },
+    "weighted avg": {
+      "precision": 0.9996491380132776,
+      "recall": 0.999648382559775,
+      "f1-score": 0.9996483720549934,
+      "support": 11376.0
+    }
+  },
+  "significance_vs_best": [],
+  "feature_ablation": [],
+  "evaluation_notes": {
+    "split_warning": "当前评估依赖现有 train/val/test csv。若窗口来自同一连续段，可能高估泛化性能。建议补充被试级/会话级划分。",
+    "paper_tip": "建议在论文正文报告 acc、balanced acc、macro F1（mean±std）并附显著性检验。"
+  },
+  "all_candidates": [
+    {
+      "name": "eeg_msresnet",
+      "val_acc": 1.0,
+      "robust_score_mean": 1.0,
+      "val_acc_std": 0.0,
+      "cv_acc_mean": 0.0
+    },
+    {
+      "name": "ensemble_top3_weighted",
+      "val_acc": 1.0,
+      "robust_score_mean": 1.0,
+      "val_acc_std": 0.0,
+      "cv_acc_mean": 0.0
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+Block,Genre,Music_File,Trigger_Index
+1,rock,d:\python\music_eeg\materials\music\rock.mp3,2
+1,classical,d:\python\music_eeg\materials\music\classical.mp3,1
+1,ambient,d:\python\music_eeg\materials\music\ambient.mp3,4
+1,jazz,d:\python\music_eeg\materials\music\jazz.mp3,3
