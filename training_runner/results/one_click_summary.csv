@@ -1,1 +1,0 @@
-run,best_model,test_accuracy,test_macro_f1\nresmlp_focal_onecycle,eeg_resmlp,0.328235,0.302792\nmsresnet_focal_onecycle,eeg_msresnet,0.999648,0.999648\n

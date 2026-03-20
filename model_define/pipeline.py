@@ -12,6 +12,7 @@ from .data_utils import load_split
 from .evaluation import pairwise_significance, run_feature_ablation
 from .trainers import (
     resolve_torch_device,
+    train_eeg_chanattn,
     train_eeg_msresnet,
     train_eeg_resmlp,
 )
@@ -120,6 +121,9 @@ def run_training(
     if model_variant in {"all", "msresnet"}:
         _collect_deep_candidate("eeg_msresnet", train_eeg_msresnet, default_loss="focal", default_onecycle=True)
 
+    if model_variant in {"all", "chanattn"}:
+        _collect_deep_candidate("eeg_chanattn", train_eeg_chanattn, default_loss="focal", default_onecycle=True)
+
     print("\n===== 传统机器学习已禁用 =====")
 
     ranked = sorted(candidates, key=lambda x: x["val_acc"], reverse=True)
@@ -163,6 +167,24 @@ def run_training(
     best_candidate = sorted(candidates, key=lambda x: x["val_acc"], reverse=True)[0]
     print(f"\n最终选中模型: {best_candidate['name']} (val_acc={best_candidate['val_acc']:.4f})")
 
+    model_output_path = Path(model_path)
+    encoder_output_path = Path(encoder_path)
+    report_output_path = Path(report_path)
+
+    if not model_output_path.is_absolute():
+        model_output_path = data_root / model_output_path
+    if not encoder_output_path.is_absolute():
+        encoder_output_path = data_root / encoder_output_path
+    if not report_output_path.is_absolute():
+        report_output_path = data_root / report_output_path
+
+    model_output_path.parent.mkdir(parents=True, exist_ok=True)
+    encoder_output_path.parent.mkdir(parents=True, exist_ok=True)
+    report_output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    checkpoints_dir = model_output_path.parent.parent / "checkpoints"
+    checkpoints_dir.mkdir(parents=True, exist_ok=True)
+
     if best_candidate["artifact"]["type"] == "sklearn":
         joblib.dump(
             {
@@ -170,15 +192,15 @@ def run_training(
                 "model": best_candidate["artifact"]["model"],
                 "label_classes": label_encoder.classes_.tolist(),
             },
-            data_root / model_path,
+            model_output_path,
         )
     elif best_candidate["artifact"]["type"] == "torch":
-        torch.save(best_candidate["artifact"]["state"], data_root / f"best_{best_candidate['name']}.pt")
+        torch.save(best_candidate["artifact"]["state"], checkpoints_dir / f"best_{best_candidate['name']}.pt")
     else:
-        with open(data_root / "best_ensemble_meta.json", "w", encoding="utf-8") as f:
+        with open(checkpoints_dir / "best_ensemble_meta.json", "w", encoding="utf-8") as f:
             json.dump(best_candidate["artifact"], f, ensure_ascii=False, indent=2)
 
-    joblib.dump(label_encoder, data_root / encoder_path)
+    joblib.dump(label_encoder, encoder_output_path)
 
     test_pred_enc = best_candidate["test_prob"].argmax(axis=1)
     test_acc = accuracy_score(y_test_enc, test_pred_enc)
@@ -228,7 +250,7 @@ def run_training(
         ],
     }
 
-    with open(data_root / report_path, "w", encoding="utf-8") as f:
+    with open(report_output_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
     print("\n=== 测试结果 ===")

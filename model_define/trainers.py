@@ -1,4 +1,6 @@
 import importlib.util
+import os
+import sys
 import time
 
 import numpy as np
@@ -11,7 +13,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from torch.utils.data import DataLoader, TensorDataset
 
-from .models import EEG1DCNN, EEGMSResNet1D, EEGResMLPNet
+from .models import EEG1DCNN, EEGChannelAttnNet, EEGMSResNet1D, EEGResMLPNet
 
 if importlib.util.find_spec("imblearn.over_sampling") is not None:
     from imblearn.over_sampling import SMOTE
@@ -23,15 +25,27 @@ else:
 
 
 def _build_loader(dataset: TensorDataset, batch_size: int, shuffle: bool, use_cuda: bool) -> DataLoader:
+    # Windows frequently hits shared-memory mapping limits with multi-worker CUDA loaders.
+    if sys.platform.startswith("win"):
+        return DataLoader(
+            dataset,
+            batch_size=batch_size,
+            shuffle=shuffle,
+            num_workers=0,
+            pin_memory=use_cuda,
+        )
+
+    env_workers = os.environ.get("MUSIC_EEG_NUM_WORKERS")
+    num_workers = int(env_workers) if env_workers is not None else 2
     if use_cuda:
         return DataLoader(
             dataset,
             batch_size=batch_size,
             shuffle=shuffle,
-            num_workers=2,
+            num_workers=max(0, num_workers),
             pin_memory=True,
-            persistent_workers=True,
-            prefetch_factor=4,
+            persistent_workers=(num_workers > 0),
+            prefetch_factor=4 if num_workers > 0 else None,
         )
     return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
@@ -526,6 +540,144 @@ def train_eeg_msresnet(
 
     if best_state is None:
         raise RuntimeError("EEG-MSResNet 训练失败，未得到有效状态。")
+
+    model.load_state_dict(best_state["model"])
+    model.eval()
+
+    with torch.no_grad():
+        with torch.autocast(device_type="cuda", dtype=torch.float16, enabled=use_cuda):
+            val_logits = model(x_val_t.to(device, non_blocking=use_cuda)).cpu()
+            test_logits = model(x_test_t.to(device, non_blocking=use_cuda)).cpu()
+
+    val_prob = F.softmax(val_logits, dim=1).numpy()
+    test_prob = F.softmax(test_logits, dim=1).numpy()
+    return best_state, val_prob, test_prob
+
+
+def train_eeg_chanattn(
+    x_train: np.ndarray,
+    y_train_enc: np.ndarray,
+    x_val: np.ndarray,
+    y_val_enc: np.ndarray,
+    x_test: np.ndarray,
+    n_classes: int,
+    seed: int,
+    epochs: int,
+    batch_size: int,
+    learning_rate: float,
+    patience: int,
+    device: torch.device,
+    loss_name: str = "focal",
+    use_onecycle: bool = True,
+):
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    if device.type == "cuda":
+        torch.cuda.manual_seed_all(seed)
+
+    x_mean = x_train.mean(axis=0, keepdims=True)
+    x_std = x_train.std(axis=0, keepdims=True) + 1e-6
+    x_train_n = ((x_train - x_mean) / x_std).astype(np.float32, copy=False)
+    x_val_n = ((x_val - x_mean) / x_std).astype(np.float32, copy=False)
+    x_test_n = ((x_test - x_mean) / x_std).astype(np.float32, copy=False)
+
+    x_train_t = torch.from_numpy(x_train_n).unsqueeze(1).contiguous()
+    x_val_t = torch.from_numpy(x_val_n).unsqueeze(1).contiguous()
+    x_test_t = torch.from_numpy(x_test_n).unsqueeze(1).contiguous()
+    y_train_t = torch.from_numpy(y_train_enc).long()
+    y_val_t = torch.from_numpy(y_val_enc).long()
+
+    use_cuda = device.type == "cuda"
+    train_loader = _build_loader(TensorDataset(x_train_t, y_train_t), batch_size=batch_size, shuffle=True, use_cuda=use_cuda)
+    val_loader = _build_loader(TensorDataset(x_val_t, y_val_t), batch_size=batch_size, shuffle=False, use_cuda=use_cuda)
+
+    model = EEGChannelAttnNet(x_train.shape[1], n_classes=n_classes).to(device)
+    scaler = torch.amp.GradScaler("cuda", enabled=use_cuda)
+
+    class_counts = np.bincount(y_train_enc)
+    class_weights = (len(y_train_enc) / (len(class_counts) * class_counts)).astype(np.float32)
+    criterion = _build_criterion(class_weights, device, loss_name=loss_name)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=2e-3)
+    if use_onecycle:
+        scheduler = torch.optim.lr_scheduler.OneCycleLR(
+            optimizer,
+            max_lr=learning_rate,
+            epochs=epochs,
+            steps_per_epoch=max(1, len(train_loader)),
+            pct_start=0.2,
+        )
+    else:
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(epochs, 10), eta_min=1e-5)
+
+    best_state = None
+    best_val_acc = -1.0
+    wait = 0
+
+    for epoch in range(1, epochs + 1):
+        model.train()
+        train_correct = 0
+        train_total = 0
+
+        for xb, yb in train_loader:
+            xb = xb.to(device, non_blocking=use_cuda)
+            yb = yb.to(device, non_blocking=use_cuda)
+            xb_aug = xb + 0.006 * torch.randn_like(xb)
+
+            optimizer.zero_grad()
+            with torch.autocast(device_type="cuda", dtype=torch.float16, enabled=use_cuda):
+                logits = model(xb_aug)
+                loss = criterion(logits, yb)
+            scaler.scale(loss).backward()
+            scaler.unscale_(optimizer)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=2.5)
+            scaler.step(optimizer)
+            scaler.update()
+            if use_onecycle:
+                scheduler.step()
+
+            pred = logits.argmax(dim=1)
+            train_correct += (pred == yb).sum().item()
+            train_total += yb.size(0)
+
+        if not use_onecycle:
+            scheduler.step()
+
+        model.eval()
+        val_logits = []
+        with torch.no_grad():
+            for xb, _ in val_loader:
+                xb = xb.to(device, non_blocking=use_cuda)
+                with torch.autocast(device_type="cuda", dtype=torch.float16, enabled=use_cuda):
+                    logits = model(xb)
+                val_logits.append(logits.cpu())
+
+        val_logits = torch.cat(val_logits, dim=0)
+        val_prob = F.softmax(val_logits, dim=1).numpy()
+        val_pred = val_prob.argmax(axis=1)
+        val_acc = accuracy_score(y_val_enc, val_pred)
+        train_acc = train_correct / max(train_total, 1)
+
+        print(f"[EEG-ChanAttn] Epoch {epoch:03d} | train_acc={train_acc:.4f} | val_acc={val_acc:.4f}")
+        if epoch == 1:
+            _maybe_print_cuda_runtime(use_cuda=use_cuda, tag="EEG-ChanAttn")
+
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            wait = 0
+            best_state = {
+                "model": model.state_dict(),
+                "x_mean": x_mean.astype(np.float32),
+                "x_std": x_std.astype(np.float32),
+                "input_dim": int(x_train.shape[1]),
+            }
+        else:
+            wait += 1
+            if wait >= patience:
+                print(f"[EEG-ChanAttn] 早停触发：{patience} 个 epoch 验证准确率未提升。")
+                break
+
+    if best_state is None:
+        raise RuntimeError("EEG-ChanAttn 训练失败，未得到有效状态。")
 
     model.load_state_dict(best_state["model"])
     model.eval()

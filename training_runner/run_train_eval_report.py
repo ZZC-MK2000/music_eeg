@@ -1,5 +1,4 @@
 from music_eeg.model_define.pipeline import run_training
-import json
 import sys
 from pathlib import Path
 
@@ -15,8 +14,17 @@ if str(PROJECT_ROOT.parent) not in sys.path:
 def main() -> None:
     data_dir = PROJECT_ROOT / "processed_data"
     results_dir = PROJECT_ROOT / "training_runner" / "results"
+    reports_json_dir = results_dir / "reports" / "json"
+    reports_csv_dir = results_dir / "reports" / "csv"
+    models_sklearn_dir = results_dir / "models" / "sklearn"
+    models_encoder_dir = results_dir / "models" / "encoders"
     figures_dir = results_dir / "figures"
+
     results_dir.mkdir(parents=True, exist_ok=True)
+    reports_json_dir.mkdir(parents=True, exist_ok=True)
+    reports_csv_dir.mkdir(parents=True, exist_ok=True)
+    models_sklearn_dir.mkdir(parents=True, exist_ok=True)
+    models_encoder_dir.mkdir(parents=True, exist_ok=True)
     figures_dir.mkdir(parents=True, exist_ok=True)
 
     configs = [
@@ -32,6 +40,12 @@ def main() -> None:
             "deep_loss": "focal",
             "use_onecycle": True,
         },
+        {
+            "name": "chanattn_focal_onecycle",
+            "model_variant": "chanattn",
+            "deep_loss": "focal",
+            "use_onecycle": True,
+        },
     ]
 
     metrics = []
@@ -42,9 +56,9 @@ def main() -> None:
         print(f"\\n=== Running {cfg['name']} ===")
         result = run_training(
             data_dir=str(data_dir),
-            report_path=str(results_dir / report_name),
-            model_path=str(results_dir / model_name),
-            encoder_path=str(results_dir / encoder_name),
+            report_path=str(reports_json_dir / report_name),
+            model_path=str(models_sklearn_dir / model_name),
+            encoder_path=str(models_encoder_dir / encoder_name),
             seed=42,
             epochs=100,
             batch_size=128,
@@ -73,7 +87,7 @@ def main() -> None:
             }
         )
 
-    out_csv = results_dir / "one_click_summary.csv"
+    out_csv = reports_csv_dir / "one_click_summary.csv"
     with out_csv.open("w", encoding="utf-8") as f:
         f.write("run,best_model,test_accuracy,test_macro_f1\\n")
         for row in metrics:

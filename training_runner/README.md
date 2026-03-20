@@ -2,6 +2,8 @@
 
 This document explains the current project layout and how to run the full workflow after the refactor.
 
+Project intro: this repository now focuses on EEG deep-learning pipelines only (ResMLP, MSResNet, ChanAttn). Legacy classical-ML tuning switches were removed from the training CLI.
+
 ## Project structure (high level)
 
 ```text
@@ -14,6 +16,12 @@ music_eeg/
 	├── run_train_eval_report.py
 	├── notebooks/
 	└── results/
+	    ├── reports/json/       # report_*.json, run_*.json, settings json
+	    ├── reports/csv/        # comparison/ablation/smoke/formal summary csv
+	    ├── models/sklearn/     # model_*.joblib
+	    ├── models/encoders/    # encoder_*.pkl, label encoders
+	    ├── models/checkpoints/ # best_*.pt
+	    └── figures/            # exported png charts
 ```
 
 ## Folder responsibilities
@@ -36,7 +44,7 @@ python data_processing/pipeline_cli.py workflow --profile nmedt --input-dir ../N
 2) Train one experiment:
 
 ```bash
-python training_runner/train_cli.py train --data-dir processed_data --output-dir training_runner/results --run-name msresnet_focal --device cuda --model-variant msresnet --deep-loss focal --use-onecycle --epochs 100 --patience 25 --batch-size 128 --robust-seed-offsets 0 --cv-folds 2 --no-calibration --no-smote
+python training_runner/train_cli.py train --data-dir processed_data --output-dir training_runner/results --run-name msresnet_focal --device cuda --model-variant msresnet --deep-loss focal --use-onecycle --epochs 100 --patience 25 --batch-size 128 --robust-seed-offsets 0
 ```
 
 3) Run one-click dual-model comparison:
@@ -53,4 +61,4 @@ python training_runner/run_train_eval_report.py
 
 - Training commands are no longer in `data_processing/pipeline_cli.py`.
 - Use `training_runner/train_cli.py` for all training/evaluation CLI runs.
-- New reports/models/figures should be written under `training_runner/results/`.
+- New outputs are grouped by type under `training_runner/results/reports`, `training_runner/results/models`, and `training_runner/results/figures`.

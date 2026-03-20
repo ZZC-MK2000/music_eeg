@@ -129,3 +129,65 @@ class EEGMSResNet1D(nn.Module):
         x = self.stem(x)
         x = self.blocks(x)
         return self.head(x)
+
+
+class ChannelInteractionAttention(nn.Module):
+    def __init__(self, channels: int, token_dim: int = 16, attn_dim: int = 32):
+        super().__init__()
+        token_dim = max(4, min(token_dim, channels))
+        self.pool = nn.AdaptiveAvgPool1d(token_dim)
+        self.to_q = nn.Linear(token_dim, attn_dim, bias=False)
+        self.to_k = nn.Linear(token_dim, attn_dim, bias=False)
+        self.to_v = nn.Linear(token_dim, attn_dim, bias=False)
+        self.out = nn.Linear(attn_dim, 1)
+
+    def forward(self, x):
+        tokens = self.pool(x)
+        q = self.to_q(tokens)
+        k = self.to_k(tokens)
+        v = self.to_v(tokens)
+
+        scale = q.shape[-1] ** -0.5
+        attn = (q @ k.transpose(-2, -1)) * scale
+        attn = attn.softmax(dim=-1)
+        context = attn @ v
+        gate = self.out(context).sigmoid()
+        return x * (1.0 + gate)
+
+
+class EEGChannelAttnNet(nn.Module):
+    def __init__(self, _input_len: int, n_classes: int, width: int = 64, depth: int = 4, dropout: float = 0.2):
+        super().__init__()
+        self.stem = nn.Sequential(
+            nn.Conv1d(1, width, kernel_size=7, padding=3),
+            nn.BatchNorm1d(width),
+            nn.SiLU(),
+        )
+
+        blocks = []
+        for _ in range(max(1, depth)):
+            blocks.append(
+                nn.Sequential(
+                    nn.Conv1d(width, width, kernel_size=5, padding=2, groups=1),
+                    nn.BatchNorm1d(width),
+                    nn.SiLU(),
+                    nn.Dropout(dropout),
+                    ChannelInteractionAttention(width),
+                )
+            )
+        self.blocks = nn.ModuleList(blocks)
+
+        self.head = nn.Sequential(
+            nn.AdaptiveAvgPool1d(1),
+            nn.Flatten(),
+            nn.Linear(width, width),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(width, n_classes),
+        )
+
+    def forward(self, x):
+        x = self.stem(x)
+        for block in self.blocks:
+            x = x + block(x)
+        return self.head(x)
