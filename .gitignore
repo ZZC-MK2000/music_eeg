@@ -36,4 +36,25 @@ processed_data/
 training_runner/results/
 
 # Local experiment outputs
+data_collector/materials/
 data_collector/save/
+
+# Generic model/data artifacts (prevent oversized git packs)
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.joblib
+*.pkl
+
+# Large tabular and intermediate data
+*.parquet
+*.feather
+*.h5
+*.hdf5
+
+# Notebook outputs and temporary exports
+*.nbconvert.ipynb
+
+# Optional: generated figures and reports under runner
+training_runner/results/**
